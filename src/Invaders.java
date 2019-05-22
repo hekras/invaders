@@ -523,7 +523,7 @@ public class Invaders extends Application {
             gc.setFill(col);
             gc.fillRect(loc.x + 1 * S, loc.y, 8 * S, 1 * S);
             gc.fillRect(loc.x, loc.y + 1 * S, 10 * S, 9 * S);
-            var xx = loc.x + 3 * Math.sin(tick) * S;
+            var xx = loc.x + 3 * Math.sin(tick*2) * S;
             gc.fillRect(xx, loc.y + 8 * S, 4 * S, 5 * S);
             gc.fillRect(xx + 6 * S, loc.y + 8 * S, 4 * S, 5 * S);
             gc.setFill(Color.WHITE); // hej
