@@ -31,7 +31,7 @@ public class Invaders extends Application {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         // Level 1
-        {0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 0},
         {1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1},
@@ -45,7 +45,7 @@ public class Invaders extends Application {
     AnimationTimer timer;
     final Canvas canvas = new Canvas(width, height);
     PGoodBoi player = new PGoodBoi(width / 2, height - 80);
-    List<PBadBoi> baddies = new ArrayList<>();
+    List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
     double mousex, mousey;
@@ -120,9 +120,48 @@ public class Invaders extends Application {
             int[] m = levels[p1 + i];
             int y = 2 + i * 18 * 5;
             for (int j = 0; j < m.length; j++) {
-                if (m[j] > 0) {
-                    int x = 4 + j * 18 * 5;
-                    PBadBoi p = new PBadBoi(x, y);
+                BadBoiClass p = null;
+                int x = 4 + j * 18 * 5;
+                switch (m[j]) {
+                    case 1:
+                        p = new PBadBoiAlien(x, y, Color.RED);
+                        break;
+                    case 2:
+                        p = new PBadBoiAlien(x, y, Color.GREEN);
+                        break;
+                    case 3:
+                        p = new PBadBoiAlien(x, y, Color.BLUE);
+                        break;
+                    case 4:
+                        p = new PBadBoiAlien(x, y, Color.YELLOW);
+                        break;
+                    case 5:
+                        p = new PBadBoiAlien(x, y, Color.AQUAMARINE);
+                        break;
+                    case 6:
+                        p = new PBadBoiAlien(x, y, Color.BROWN);
+                        break;
+                    case 7:
+                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 4);
+                        break;
+                    case 8:
+                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 5);
+                        break;
+                    case 9:
+                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 6);
+                        break;
+                    case 10:
+                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 4);
+                        break;
+                    case 11:
+                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 5);
+                        break;
+                    case 12:
+                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 6);
+                        break;
+
+                }
+                if (p != null) {
                     baddies.add(p);
                 }
             }
@@ -374,7 +413,7 @@ public class Invaders extends Application {
         }
 
         // returns true if there is a collision
-        boolean checkCollision(PBadBoi p) {
+        boolean checkCollision(BadBoiClass p) {
             boolean ret = false;
 
             if ((loc.x > p.loc.x) && (loc.x < p.loc.x + 50)
@@ -463,16 +502,18 @@ public class Invaders extends Application {
      * Parent class for all baddies
      *
      */
-    abstract class BadBoiClass {
+    class BadBoiClass {
 
-         static final int S = 5;  // scale size of the baddie
-         PVector loc;
+        static final int S = 5;  // scale size of the baddie
+        PVector loc;
 
         public BadBoiClass(double x, double y) {
             loc = new PVector(x, y);
         }
 
-        abstract public void display(double tick, GraphicsContext gc);
+        public void display(double tick, GraphicsContext gc) {
+        }
+    ;
 
     }
 
@@ -482,13 +523,16 @@ public class Invaders extends Application {
      */
     class PBadBoiAlien extends BadBoiClass {
 
-        public PBadBoiAlien(double x, double y) {
+        private Color col;
+
+        public PBadBoiAlien(double x, double y, Color col) {
             super(x, y);
+            this.col = col;
         }
 
         @Override
         public void display(double tick, GraphicsContext gc) {
-            gc.setFill(Color.RED);
+            gc.setFill(col);
             gc.fillRect(loc.x + 1 * S, loc.y, 8 * S, 1 * S);
             gc.fillRect(loc.x, loc.y + 1 * S, 10 * S, 9 * S);
             var xx = loc.x + 3 * Math.sin(tick) * S;
@@ -510,9 +554,21 @@ public class Invaders extends Application {
     class PBadBoiPolyVector extends BadBoiClass {
 
         private double n = 10; // corners
+        private Color col1, col2;
 
-        public PBadBoiPolyVector(double x, double y) {
+        /**
+         *
+         * @param x coordinate
+         * @param y coordinate
+         * @param col1 color 1
+         * @param col2 color 2
+         * @param n number of edges
+         */
+        public PBadBoiPolyVector(double x, double y, Color col1, Color col2, double n) {
             super(x, y);
+            this.n = n;
+            this.col1 = col1;
+            this.col2 = col2;
         }
 
         @Override
@@ -521,7 +577,7 @@ public class Invaders extends Application {
             double cy = loc.y - S / 2 + S * 6;
             double r = 8;
 
-            gc.setStroke(Color.WHITE);
+            gc.setStroke(col1);
             gc.setLineWidth(S / 2);
             gc.strokeOval(loc.x - S / 2, loc.y - S / 2, 12 * S, 12 * S);
             double a = 2 * Math.PI / n;
@@ -535,7 +591,7 @@ public class Invaders extends Application {
                 gc.lineTo(x, y);
             }
             gc.closePath();
-            gc.setStroke(Color.YELLOW);
+            gc.setStroke(col2);
             gc.setLineWidth(S);
             gc.stroke();
         }
@@ -545,12 +601,24 @@ public class Invaders extends Application {
      * Renders a centered vector-type alien
      *
      */
-    class PBadBoi extends BadBoiClass {
+    class PBadBoiPolyLines extends BadBoiClass {
 
         private double n = 3; // number of lines from center
+        private Color col1, col2;
 
-        public PBadBoi(double x, double y) {
+        /**
+         *
+         * @param x coordinate
+         * @param y coordinate
+         * @param col1 color 1
+         * @param col2 color 2
+         * @param n number of edges
+         */
+        public PBadBoiPolyLines(double x, double y, Color col1, Color col2, double n) {
             super(x, y);
+            this.n = n;
+            this.col1 = col1;
+            this.col2 = col2;
         }
 
         @Override
