@@ -120,50 +120,38 @@ public class Invaders extends Application {
             int[] m = levels[p1 + i];
             int y = 2 + i * 18 * 5;
             for (int j = 0; j < m.length; j++) {
-                BadBoiClass p = null;
                 int x = 4 + j * 18 * 5;
-                switch (m[j]) {
-                    case 1:
-                        p = new PBadBoiAlien(x, y, Color.RED);
-                        break;
-                    case 2:
-                        p = new PBadBoiAlien(x, y, Color.GREEN);
-                        break;
-                    case 3:
-                        p = new PBadBoiAlien(x, y, Color.BLUE);
-                        break;
-                    case 4:
-                        p = new PBadBoiAlien(x, y, Color.YELLOW);
-                        break;
-                    case 5:
-                        p = new PBadBoiAlien(x, y, Color.AQUAMARINE);
-                        break;
-                    case 6:
-                        p = new PBadBoiAlien(x, y, Color.BROWN);
-                        break;
-                    case 7:
-                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 4);
-                        break;
-                    case 8:
-                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 5);
-                        break;
-                    case 9:
-                        p = new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 6);
-                        break;
-                    case 10:
-                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 4);
-                        break;
-                    case 11:
-                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 5);
-                        break;
-                    case 12:
-                        p = new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 6);
-                        break;
-
-                }
-                if (p != null) {
-                    baddies.add(p);
-                }
+                BadBoiClass p = switch (m[j]) {
+                    case 1->
+                        new PBadBoiAlien(x, y, Color.RED);
+                    case 2->
+                        new PBadBoiAlien(x, y, Color.GREEN);
+                    case 3->
+                        new PBadBoiAlien(x, y, Color.BLUE);
+                    case 4->
+                        new PBadBoiAlien(x, y, Color.YELLOW);
+                    case 5->
+                        new PBadBoiAlien(x, y, Color.AQUAMARINE);
+                    case 6->
+                        new PBadBoiAlien(x, y, Color.BROWN);
+                    case 7->
+                        new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 4);
+                    case 8->
+                        new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 5);
+                    case 9->
+                        new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 6);
+                    case 10->
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 4);
+                    case 11->
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 5);
+                    case 12->
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 6);
+                    default->
+                        null;
+                };
+                    if (p != null) {
+                        baddies.add(p);
+                    }
             }
         }
     }
