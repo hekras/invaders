@@ -38,8 +38,17 @@ public class Invaders extends Application {
         {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
         {1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
-        {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0},};
-
+        {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0},
+        // Level 2
+        {666, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    };
     final double height = 1080;
     final double width = 1920;
     AnimationTimer timer;
@@ -109,7 +118,7 @@ public class Invaders extends Application {
         s.setCursor(Cursor.NONE);
         stage.setScene(s);
         stage.show();
-        initInvaders(1);
+        initInvaders(2);
         gameloop();
     }
 
@@ -146,6 +155,8 @@ public class Invaders extends Application {
                         new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 5);
                     case 12->
                         new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 6);
+                    case 666->
+                        new PBadBoiMegaAlien(x, y, Color.BROWN);
                     default->
                         null;
                 };
@@ -532,6 +543,37 @@ public class Invaders extends Application {
             gc.setFill(Color.BLACK);
             gc.fillRect(loc.x + 2 * S, loc.y + 4 * S, 1 * S, 2 * S);
             gc.fillRect(loc.x + 6 * S, loc.y + 4 * S, 1 * S, 2 * S);
+        }
+    }
+
+    /**
+     * renders an alien type baddie
+     *
+     */
+    class PBadBoiMegaAlien extends BadBoiClass {
+
+        private Color col;
+        private int s = 30;
+
+        public PBadBoiMegaAlien(double x, double y, Color col) {
+            super(x, y);
+            this.col = col;
+        }
+
+        @Override
+        public void display(double tick, GraphicsContext gc) {
+            gc.setFill(col);
+            gc.fillRect(loc.x + 1 * s, loc.y, 8 * s, 1 * s);
+            gc.fillRect(loc.x, loc.y + 1 * s, 10 * s, 9 * s);
+            var xx = loc.x + 3 * Math.sin(tick) * s;
+            gc.fillRect(xx, loc.y + 8 * s, 4 * s, 5 * s);
+            gc.fillRect(xx + 6 * s, loc.y + 8 * s, 4 * s, 5 * s);
+            gc.setFill(Color.WHITE); // hej
+            gc.fillRect(loc.x + 2 * s, loc.y + 2 * s, 2 * s, 4 * s);
+            gc.fillRect(loc.x + 6 * s, loc.y + 2 * s, 2 * s, 4 * s);
+            gc.setFill(Color.BLACK);
+            gc.fillRect(loc.x + 2 * s, loc.y + 4 * s, 1 * s, 2 * s);
+            gc.fillRect(loc.x + 6 * s, loc.y + 4 * s, 1 * s, 2 * s);
         }
     }
 
