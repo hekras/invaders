@@ -47,8 +47,7 @@ public class Invaders extends Application {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
     final double height = 1080;
     final double width = 1920;
     AnimationTimer timer;
@@ -118,7 +117,7 @@ public class Invaders extends Application {
         s.setCursor(Cursor.NONE);
         stage.setScene(s);
         stage.show();
-        initInvaders(2);
+        initInvaders(1);
         gameloop();
     }
 
@@ -150,19 +149,19 @@ public class Invaders extends Application {
                     case 9->
                         new PBadBoiPolyLines(x, y, Color.YELLOW, Color.RED, 6);
                     case 10->
-                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 4);
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 4, 5);
                     case 11->
-                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 5);
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 10, 11);
                     case 12->
-                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 6);
+                        new PBadBoiPolyVector(x, y, Color.YELLOW, Color.RED, 8, 9);
                     case 666->
                         new PBadBoiMegaAlien(x, y, Color.BROWN);
                     default->
                         null;
                 };
-                    if (p != null) {
-                        baddies.add(p);
-                    }
+                if (p != null) {
+                    baddies.add(p);
+                }
             }
         }
     }
@@ -512,7 +511,10 @@ public class Invaders extends Application {
 
         public void display(double tick, GraphicsContext gc) {
         }
-    ;
+
+        public boolean contains(double x, double y) {
+            return false;
+        }
 
     }
 
@@ -534,7 +536,7 @@ public class Invaders extends Application {
             gc.setFill(col);
             gc.fillRect(loc.x + 1 * S, loc.y, 8 * S, 1 * S);
             gc.fillRect(loc.x, loc.y + 1 * S, 10 * S, 9 * S);
-            var xx = loc.x + 3 * Math.sin(tick*2) * S;
+            double xx = loc.x + 3 * Math.sin(tick * 2) * S;
             gc.fillRect(xx, loc.y + 8 * S, 4 * S, 5 * S);
             gc.fillRect(xx + 6 * S, loc.y + 8 * S, 4 * S, 5 * S);
             gc.setFill(Color.WHITE); // hej
@@ -553,7 +555,7 @@ public class Invaders extends Application {
     class PBadBoiMegaAlien extends BadBoiClass {
 
         private Color col;
-        private int s = 30;
+        private int s = 30; // the size
 
         public PBadBoiMegaAlien(double x, double y, Color col) {
             super(x, y);
@@ -565,7 +567,7 @@ public class Invaders extends Application {
             gc.setFill(col);
             gc.fillRect(loc.x + 1 * s, loc.y, 8 * s, 1 * s);
             gc.fillRect(loc.x, loc.y + 1 * s, 10 * s, 9 * s);
-            var xx = loc.x + 3 * Math.sin(tick) * s;
+            double xx = loc.x + 3 * Math.sin(tick) * s;
             gc.fillRect(xx, loc.y + 8 * s, 4 * s, 5 * s);
             gc.fillRect(xx + 6 * s, loc.y + 8 * s, 4 * s, 5 * s);
             gc.setFill(Color.WHITE); // hej
@@ -584,6 +586,7 @@ public class Invaders extends Application {
     class PBadBoiPolyVector extends BadBoiClass {
 
         private double n = 10; // corners
+        private double a = Math.PI;
         private Color col1, col2;
 
         /**
@@ -594,9 +597,10 @@ public class Invaders extends Application {
          * @param col2 color 2
          * @param n number of edges
          */
-        public PBadBoiPolyVector(double x, double y, Color col1, Color col2, double n) {
+        public PBadBoiPolyVector(double x, double y, Color col1, Color col2, double f, double n) {
             super(x, y);
             this.n = n;
+            this.a = f * Math.PI / n;
             this.col1 = col1;
             this.col2 = col2;
         }
@@ -610,7 +614,6 @@ public class Invaders extends Application {
             gc.setStroke(col1);
             gc.setLineWidth(S / 2);
             gc.strokeOval(loc.x - S / 2, loc.y - S / 2, 12 * S, 12 * S);
-            double a = 2 * Math.PI / n;
             double x = cx + (r * S * Math.sin(tick));
             double y = cy + (r * S * Math.cos(tick));
             gc.beginPath();
