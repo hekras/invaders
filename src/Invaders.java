@@ -20,6 +20,7 @@ import javafx.stage.Stage;
  */
 public class Invaders extends Application {
 
+    final static int STARTLEVEL = 1;
     int levels[][] = {
         // Level 0
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -117,7 +118,7 @@ public class Invaders extends Application {
         s.setCursor(Cursor.NONE);
         stage.setScene(s);
         stage.show();
-        initInvaders(1);
+        initInvaders(STARTLEVEL);
         gameloop();
     }
 
@@ -159,9 +160,9 @@ public class Invaders extends Application {
                     default->
                         null;
                 };
-                if (p != null) {
-                    baddies.add(p);
-                }
+                    if (p != null) {
+                        baddies.add(p);
+                    }
             }
         }
     }
@@ -412,16 +413,7 @@ public class Invaders extends Application {
 
         // returns true if there is a collision
         boolean checkCollision(BadBoiClass p) {
-            boolean ret = false;
-
-            if ((loc.x > p.loc.x) && (loc.x < p.loc.x + 50)
-                    && (loc.y > p.loc.y) && (loc.y < p.loc.y + 65)) {
-                ret = true;
-            } else if ((loc.x + d.x * s > p.loc.x) && (loc.x + d.x * s < p.loc.x + 50)
-                    && (loc.y + d.y * s > p.loc.y) && (loc.y + d.y * s < p.loc.y + 65)) {
-                ret = true;
-            }
-
+            boolean ret = p.contains(loc.x, loc.y);
             return ret;
         }
 
@@ -524,6 +516,7 @@ public class Invaders extends Application {
      */
     class PBadBoiAlien extends BadBoiClass {
 
+        private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private Color col;
 
         public PBadBoiAlien(double x, double y, Color col) {
@@ -545,7 +538,21 @@ public class Invaders extends Application {
             gc.setFill(Color.BLACK);
             gc.fillRect(loc.x + 2 * S, loc.y + 4 * S, 1 * S, 2 * S);
             gc.fillRect(loc.x + 6 * S, loc.y + 4 * S, 1 * S, 2 * S);
+
+            // calculate hitbox
+            r1x1 = loc.x;
+            r1y1 = loc.y;
+            r1x2 = r1x1 + 10 * S;
+            r1y2 = r1y1 + 13 * S;
         }
+
+        public boolean contains(double x, double y) {
+            if ((x >= r1x1) && (x <= r1x2) && (y >= r1y1) && (y <= r1y2)) {
+                return true;
+            }
+            return false;
+        }
+
     }
 
     /**
@@ -556,6 +563,9 @@ public class Invaders extends Application {
 
         private Color col;
         private int s = 30; // the size
+        private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
+        private double r2x1, r2y1, r2x2, r2y2;
+        private double r3x1, r3y1, r3x2, r3y2;
 
         public PBadBoiMegaAlien(double x, double y, Color col) {
             super(x, y);
@@ -576,7 +586,37 @@ public class Invaders extends Application {
             gc.setFill(Color.BLACK);
             gc.fillRect(loc.x + 2 * s, loc.y + 4 * s, 1 * s, 2 * s);
             gc.fillRect(loc.x + 6 * s, loc.y + 4 * s, 1 * s, 2 * s);
+
+            // calculate hitbox
+            r1x1 = loc.x;
+            r1y1 = loc.y;
+            r1x2 = loc.x + 10 * s;
+            r1y2 = loc.y + 10 * s;
+
+            r2x1 = xx;
+            r2y1 = loc.y + 8 * s;
+            r2x2 = r2x1 + 4 * s;
+            r2y2 = r2y1 + 5 * s;
+
+            r3x1 = xx + 6 * s;
+            r3y1 = r2y1;
+            r3x2 = r3x1 + 4 * s;
+            r3y2 = r2y2;
         }
+
+        public boolean contains(double x, double y) {
+            if ((x >= r1x1) && (x <= r1x2) && (y >= r1y1) && (y <= r1y2)) {
+                return true;
+            }
+            if ((x >= r2x1) && (x <= r2x2) && (y >= r2y1) && (y <= r2y2)) {
+                return true;
+            }
+            if ((x >= r3x1) && (x <= r3x2) && (y >= r3y1) && (y <= r3y2)) {
+                return true;
+            }
+            return false;
+        }
+
     }
 
     /**
@@ -584,7 +624,7 @@ public class Invaders extends Application {
      *
      */
     class PBadBoiPolyVector extends BadBoiClass {
-
+        private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private double n = 10; // corners
         private double a = Math.PI;
         private Color col1, col2;
@@ -627,6 +667,19 @@ public class Invaders extends Application {
             gc.setStroke(col2);
             gc.setLineWidth(S);
             gc.stroke();
+
+            // calculate hitbox
+            r1x1 = loc.x;
+            r1y1 = loc.y;
+            r1x2 = r1x1 + 2 * r * S;
+            r1y2 = r1y1 + 2 * r * S;
+        }
+
+        public boolean contains(double x, double y) {
+            if ((x >= r1x1) && (x <= r1x2) && (y >= r1y1) && (y <= r1y2)) {
+                return true;
+            }
+            return false;
         }
     }
 
@@ -635,7 +688,7 @@ public class Invaders extends Application {
      *
      */
     class PBadBoiPolyLines extends BadBoiClass {
-
+        private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private double n = 3; // number of lines from center
         private Color col1, col2;
 
@@ -677,6 +730,19 @@ public class Invaders extends Application {
             gc.setStroke(Color.RED);
             gc.setLineWidth(S);
             gc.stroke();
+
+            // calculate hitbox
+            r1x1 = loc.x;
+            r1y1 = loc.y;
+            r1x2 = r1x1 + 2 * r * S;
+            r1y2 = r1y1 + 2 * r * S;
+        }
+
+        public boolean contains(double x, double y) {
+            if ((x >= r1x1) && (x <= r1x2) && (y >= r1y1) && (y <= r1y2)) {
+                return true;
+            }
+            return false;
         }
     }
 
