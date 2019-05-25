@@ -49,6 +49,7 @@ public class Invaders extends Application {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
+    
     final double height = 1080;
     final double width = 1920;
     AnimationTimer timer;
@@ -272,7 +273,7 @@ public class Invaders extends Application {
                     p.display(tick, gc);
                 });
                 //Do the bombing
-                if (Math.random() < 0.05) {
+                if (Math.random() < 0.025) {
                     int i = (int) (Math.random() * baddies.size());
                     bombs.add(new PBomb(baddies.get(i).loc));
                 }
@@ -435,10 +436,10 @@ public class Invaders extends Application {
      */
     class PGoodBoi {
 
-        PVector loc;
-        PVector vel;
-        PVector acc;
-        PVector d;
+        PVector loc; // location in space
+        PVector vel; // vector for velocity
+        PVector acc; // vector for accelleration
+        PVector d; // nomalized vector for direction
         double topspeed = 10;
         private static final int s = 3; // scale of good gal
 
@@ -448,10 +449,43 @@ public class Invaders extends Application {
             vel = new PVector(0, 0);
         }
 
+        /**
+         * handles keypress. Called by AnimationTimer handler at every frame
+         */
         void update() {
             if (kup) {
                 acc.x = d.x;
                 acc.y = d.y;
+                acc.mult(0.05);
+                vel.add(acc);
+                if (vel.mag() > topspeed) {
+                    vel.normalize();
+                    vel.mult(topspeed);
+                }
+            }
+            else if (kdown){
+                acc.x = d.x;
+                acc.y = -d.y;
+                acc.mult(0.05);
+                vel.add(acc);
+                if (vel.mag() > topspeed) {
+                    vel.normalize();
+                    vel.mult(topspeed);
+                }
+            }
+            else if (kleft){
+                acc.x = d.y;
+                acc.y = d.x;
+                acc.mult(0.05);
+                vel.add(acc);
+                if (vel.mag() > topspeed) {
+                    vel.normalize();
+                    vel.mult(topspeed);
+                }
+            }
+            else if (krigth){
+                acc.x = -d.y;
+                acc.y = d.x;
                 acc.mult(0.05);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
@@ -635,6 +669,7 @@ public class Invaders extends Application {
          * @param y coordinate
          * @param col1 color 1
          * @param col2 color 2
+         * @param f factor for PI
          * @param n number of edges
          */
         public PBadBoiPolyVector(double x, double y, Color col1, Color col2, double f, double n) {
