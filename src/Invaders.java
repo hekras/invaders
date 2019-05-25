@@ -436,6 +436,7 @@ public class Invaders extends Application {
      */
     class PGoodBoi {
 
+        PVector t; // translation vector
         PVector loc; // location in space
         PVector vel; // vector for velocity
         PVector acc; // vector for accelleration
@@ -447,6 +448,7 @@ public class Invaders extends Application {
             loc = new PVector(x, y);
             acc = new PVector(0, 0);
             vel = new PVector(0, 0);
+            t = new PVector(0, 0);
         }
 
         /**
@@ -493,7 +495,8 @@ public class Invaders extends Application {
                     vel.mult(topspeed);
                 }
             }
-            loc.add(vel);
+            t.add(vel);
+//            loc.add(vel);
         }
 
         void checkEdges() {
@@ -519,6 +522,9 @@ public class Invaders extends Application {
             gc.fillRect(xxx, yyy + 5 * s, 18 * s, 5 * s);
             gc.rotate(-angle);
             gc.translate(-player.loc.x, -player.loc.y);
+            
+            gc.setStroke(Color.BLUEVIOLET);
+            gc.strokeRect(t.x, t.y, 3, 3);
         }
     }
 
