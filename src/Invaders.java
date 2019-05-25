@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  */
 public class Invaders extends Application {
 
-    final static int STARTLEVEL = 1;
+    final static int STARTLEVEL = 2;
     int levels[][] = {
         // Level 0
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -41,7 +41,7 @@ public class Invaders extends Application {
         {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
         {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0},
         // Level 2
-        {666, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -58,6 +58,7 @@ public class Invaders extends Application {
     List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
+    List<PBackgroundSprite> pbs = new ArrayList<>();
     double mousex, mousey;
     boolean kdown = false;
     boolean kup = false;
@@ -120,6 +121,7 @@ public class Invaders extends Application {
         stage.setScene(s);
         stage.show();
         initInvaders(STARTLEVEL);
+        initBackground();
         gameloop();
     }
 
@@ -168,7 +170,18 @@ public class Invaders extends Application {
         }
     }
 
-    void gameloop() {
+    /**
+     * distributes stars on the background
+     */
+    
+    public void initBackground(){
+        for(int i = 0; i< 20; i++){
+            pbs.add(new PBackgroundSprite(new PVector(Math.random() * 1920, Math.random() * 1080), Color.DARKSLATEGRAY));
+        }
+    }
+    
+    
+    public void gameloop() {
 
         timer = new AnimationTimer() {
             double tick = 0;
@@ -266,6 +279,11 @@ public class Invaders extends Application {
                     }
                 }
 
+                // render the background sprites
+                pbs.forEach((p) -> {
+                    p.display(gc);
+                });
+                
                 // render the bad guys
                 tick += Math.PI / 60;
                 tick = (tick > Math.PI * 2) ? tick - 2 * Math.PI : tick;
@@ -283,7 +301,7 @@ public class Invaders extends Application {
                     if (!bombs.get(i).checkEdges()) {
                         bombs.remove(i--);
                     } else {
-                        double hit = bombs.get(i).loc.dist(player.loc);
+                        double hit = bombs.get(i).t.dist(player.loc);
                         if (hit < 23) {
                             bombs.remove(i--);
                             // @todo die lene here
@@ -318,6 +336,7 @@ public class Invaders extends Application {
      */
     class PBomb {
 
+        PVector t; // translated location vector
         PVector d;
         PVector loc;
         PVector vel;
@@ -326,6 +345,7 @@ public class Invaders extends Application {
 
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
+            t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
             d = new PVector(0, 1);
             vel = new PVector(d.x, d.y);
             vel.normalize();
@@ -334,6 +354,8 @@ public class Invaders extends Application {
 
         void update() {
             loc.add(vel);
+            t.x = loc.x - player.t.x;
+            t.y = loc.y - player.t.y;
         }
 
         // returns false if drop is outside edges
@@ -367,7 +389,29 @@ public class Invaders extends Application {
 
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
-            gc.fillOval(loc.x - 5, loc.y - 5, 10, 10);
+            gc.fillOval(loc.x - 5 - player.t.x, loc.y - 5 - player.t.y, 10, 10);
+        }
+    }
+
+    /**
+     * Backgrund sprites
+     *
+     */
+    class PBackgroundSprite {
+
+        PVector t; // translated location vector
+        PVector loc;
+        private Color col;
+
+        public PBackgroundSprite(PVector l, Color col) {
+            this.col = col;
+            loc = new PVector(l.x + 30, l.y);
+            t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
+        }
+
+        void display(GraphicsContext gc) {
+            gc.setFill(col);
+            gc.fillOval(loc.x - 2.5 - player.t.x, loc.y - 2.5 - player.t.y, 5, 5);
         }
     }
 
