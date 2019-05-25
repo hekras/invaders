@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -55,6 +56,7 @@ public class Invaders extends Application {
     AnimationTimer timer;
     final Canvas canvas = new Canvas(width, height);
     PGoodBoi player = new PGoodBoi(width / 2, height - 80);
+    PVector center;
     List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
@@ -71,7 +73,8 @@ public class Invaders extends Application {
     public void start(Stage stage) {
         Group root = new Group();
         Scene s = new Scene(root, width, height, Color.BLACK);
-        player.loc = new PVector(width / 2, height / 2);
+        center = new PVector(width / 2, height / 2);
+        player.loc = new PVector(center.x, center.y);
 
         s.setOnMouseMoved((MouseEvent e) -> {
             mousex = e.getSceneX();
@@ -309,7 +312,7 @@ public class Invaders extends Application {
                             bombs.remove(i--);
                             // @todo die lene here
                             for(int ii = 0; ii < 500; ii++){
-                                boom.add(new PBoom(player.loc));
+                                boom.add(new PBoom(center));
                             }
                         } else {
                             bombs.get(i).display(gc);
@@ -317,11 +320,19 @@ public class Invaders extends Application {
                     }
                 }
                 
+                // animate boom if it is active
                 boom.forEach((p) -> {
                     p.display(gc);
                     p.update();
                 });
 
+                for(Iterator<PBoom> iter = boom.listIterator();iter.hasNext();){
+                    PBoom p = iter.next();
+                    if (p.radius < 0.1){
+                        iter.remove();
+                    }
+                }
+                    
                 // render crosshair
                 gc.setFill(Color.YELLOW);
                 double s = 3;
@@ -410,9 +421,9 @@ public class Invaders extends Application {
      */
     class PBoom {
 
-        PVector t; // translated location vector
         PVector loc;
         PVector vel;
+        double radius = 10;
         private static final int s = 30;
         private static final int w = 5;
 
@@ -422,16 +433,15 @@ public class Invaders extends Application {
          */
         public PBoom(PVector l) {
             loc = new PVector(l.x, l.y);
-            t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
             double a = 2 * Math.PI * Math.random();
             vel = new PVector(Math.sin(a), Math.cos(a));
             vel.mult(3*Math.random());
+            radius = 5+30*Math.random();
         }
 
         void update() {
             loc.add(vel);
-            t.x = loc.x - player.t.x;
-            t.y = loc.y - player.t.y;
+            radius *= 0.985;
         }
 
         // returns false if drop is outside edges
@@ -453,7 +463,7 @@ public class Invaders extends Application {
 
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
-            gc.fillOval(loc.x - 5 - player.t.x, loc.y - 5 - player.t.y, 10, 10);
+            gc.fillOval(loc.x - 5, loc.y - 5, radius, radius);
         }
     }
 
