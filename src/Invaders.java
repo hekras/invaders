@@ -49,7 +49,7 @@ public class Invaders extends Application {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
-    
+
     final double height = 1080;
     final double width = 1920;
     AnimationTimer timer;
@@ -173,14 +173,12 @@ public class Invaders extends Application {
     /**
      * distributes stars on the background
      */
-    
-    public void initBackground(){
-        for(int i = 0; i< 20; i++){
-            pbs.add(new PBackgroundSprite(new PVector(Math.random() * 1920, Math.random() * 1080), Color.DARKSLATEGRAY));
+    public void initBackground() {
+        for (int i = 0; i < 2000; i++) {
+            pbs.add(new PBackgroundSprite(new PVector(Math.random() * 19200, Math.random() * 10800), Color.DARKSLATEGRAY));
         }
     }
-    
-    
+
     public void gameloop() {
 
         timer = new AnimationTimer() {
@@ -283,18 +281,22 @@ public class Invaders extends Application {
                 pbs.forEach((p) -> {
                     p.display(gc);
                 });
-                
+
                 // render the bad guys
                 tick += Math.PI / 60;
                 tick = (tick > Math.PI * 2) ? tick - 2 * Math.PI : tick;
                 baddies.forEach((p) -> {
                     p.display(tick, gc);
                 });
+                
                 //Do the bombing
-                if (Math.random() < 0.025) {
-                    int i = (int) (Math.random() * baddies.size());
-                    bombs.add(new PBomb(baddies.get(i).loc));
+                if (baddies.size() > 0) {
+                    if (Math.random() < 0.025) {
+                        int i = (int) (Math.random() * baddies.size());
+                        bombs.add(new PBomb(baddies.get(i).loc));
+                    }
                 }
+                
                 // collision detect goodboi against bombs
                 for (int i = 0; i < bombs.size(); i++) {
                     bombs.get(i).update();
@@ -410,7 +412,8 @@ public class Invaders extends Application {
         }
 
         void display(GraphicsContext gc) {
-            gc.setFill(col);
+            gc.setFill(this.col);
+            gc.setFill(Color.rgb(255, 255, 255));
             gc.fillOval(loc.x - 2.5 - player.t.x, loc.y - 2.5 - player.t.y, 5, 5);
         }
     }
@@ -508,9 +511,8 @@ public class Invaders extends Application {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            }
-            else if (kdown){
-                acc.x = d.x;
+            } else if (kdown) {
+                acc.x = -d.x;
                 acc.y = -d.y;
                 acc.mult(0.05);
                 vel.add(acc);
@@ -518,18 +520,16 @@ public class Invaders extends Application {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            }
-            else if (kleft){
+            } else if (kleft) {
                 acc.x = d.y;
-                acc.y = d.x;
+                acc.y = -d.x;
                 acc.mult(0.05);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            }
-            else if (krigth){
+            } else if (krigth) {
                 acc.x = -d.y;
                 acc.y = d.x;
                 acc.mult(0.05);
@@ -554,6 +554,7 @@ public class Invaders extends Application {
 
         /**
          * Renders the player
+         *
          * @param gc graphicsContext of the game
          */
         void display(GraphicsContext gc) {
@@ -570,7 +571,7 @@ public class Invaders extends Application {
             gc.fillRect(xxx, yyy + 5 * s, 18 * s, 5 * s);
             gc.rotate(-angle);
             gc.translate(-player.loc.x, -player.loc.y);
-  
+
             // debug dot
 //            gc.setStroke(Color.BLUEVIOLET);
 //            gc.strokeRect(t.x, t.y, 3, 3);
@@ -607,9 +608,10 @@ public class Invaders extends Application {
 
         private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private Color col;
-        
+
         /**
          * instansiates the baddie
+         *
          * @param x coordinate
          * @param y coordinate
          * @param col color
@@ -723,6 +725,7 @@ public class Invaders extends Application {
      *
      */
     class PBadBoiPolyVector extends BadBoiClass {
+
         private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private double n = 10; // corners
         private double a = Math.PI;
@@ -790,6 +793,7 @@ public class Invaders extends Application {
      *
      */
     class PBadBoiPolyLines extends BadBoiClass {
+
         private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private double n = 3; // number of lines from center
         private Color col1, col2;
