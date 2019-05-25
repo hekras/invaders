@@ -292,7 +292,7 @@ public class Invaders extends Application {
                 baddies.forEach((p) -> {
                     p.display(tick, gc);
                 });
-                
+
                 //Do the bombing
                 if (baddies.size() > 0) {
                     if (Math.random() < 0.025) {
@@ -300,7 +300,7 @@ public class Invaders extends Application {
                         bombs.add(new PBomb(baddies.get(i).loc));
                     }
                 }
-                
+
                 // collision detect goodboi against bombs
                 for (int i = 0; i < bombs.size(); i++) {
                     bombs.get(i).update();
@@ -310,7 +310,7 @@ public class Invaders extends Application {
                         double hit = bombs.get(i).t.dist(player.loc);
                         if (hit < 23) {
                             bombs.remove(i--);
-                            for(int ii = 0; ii < 500; ii++){
+                            for (int ii = 0; ii < 500; ii++) {
                                 boom.add(new PBoom(center));
                             }
                         } else {
@@ -318,20 +318,24 @@ public class Invaders extends Application {
                         }
                     }
                 }
-                
+
                 // animate boom if it is active
                 boom.forEach((p) -> {
                     p.display(gc);
                     p.update();
                 });
 
-                for(Iterator<PBoom> iter = boom.listIterator();iter.hasNext();){
+                // remove boom sprites that are not visible
+                for (Iterator<PBoom> iter = boom.listIterator(); iter.hasNext();) {
                     PBoom p = iter.next();
-                    if (p.radius < 0.1){
+                    if (p.radius < 0.8) {
                         iter.remove();
+                        if (boom.size() == 0) {
+                            System.exit(0);
+                        }
                     }
                 }
-                    
+
                 // render crosshair
                 gc.setFill(Color.YELLOW);
                 double s = 3;
@@ -422,25 +426,25 @@ public class Invaders extends Application {
 
         PVector loc;
         PVector vel;
-        double radius = 10;
+        double radius = 5 + 30 * Math.random();
+        double factor = 0.985;
         private static final int s = 30;
         private static final int w = 5;
 
         /**
-         * 
+         *
          * @param l start location
          */
         public PBoom(PVector l) {
             loc = new PVector(l.x, l.y);
             double a = 2 * Math.PI * Math.random();
             vel = new PVector(Math.sin(a), Math.cos(a));
-            vel.mult(3*Math.random());
-            radius = 5+30*Math.random();
+            vel.mult(3 * Math.random());
         }
 
         void update() {
             loc.add(vel);
-            radius *= 0.985;
+            radius *= factor;
         }
 
         // returns false if drop is outside edges
