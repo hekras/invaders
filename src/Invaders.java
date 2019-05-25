@@ -41,7 +41,7 @@ public class Invaders extends Application {
         {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
         {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0},
         // Level 2
-        {12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {12, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -59,6 +59,7 @@ public class Invaders extends Application {
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
     List<PBackgroundSprite> pbs = new ArrayList<>();
+    List<PBoom> boom = new ArrayList<>();
     double mousex, mousey;
     boolean kdown = false;
     boolean kup = false;
@@ -70,7 +71,7 @@ public class Invaders extends Application {
     public void start(Stage stage) {
         Group root = new Group();
         Scene s = new Scene(root, width, height, Color.BLACK);
-        player.loc = new PVector(width / 2, height - 80);
+        player.loc = new PVector(width / 2, height / 2);
 
         s.setOnMouseMoved((MouseEvent e) -> {
             mousex = e.getSceneX();
@@ -307,11 +308,19 @@ public class Invaders extends Application {
                         if (hit < 23) {
                             bombs.remove(i--);
                             // @todo die lene here
+                            for(int ii = 0; ii < 500; ii++){
+                                boom.add(new PBoom(player.loc));
+                            }
                         } else {
                             bombs.get(i).display(gc);
                         }
                     }
                 }
+                
+                boom.forEach((p) -> {
+                    p.display(gc);
+                    p.update();
+                });
 
                 // render crosshair
                 gc.setFill(Color.YELLOW);
@@ -396,6 +405,59 @@ public class Invaders extends Application {
     }
 
     /**
+     * Explosion particles
+     *
+     */
+    class PBoom {
+
+        PVector t; // translated location vector
+        PVector loc;
+        PVector vel;
+        private static final int s = 30;
+        private static final int w = 5;
+
+        /**
+         * 
+         * @param l start location
+         */
+        public PBoom(PVector l) {
+            loc = new PVector(l.x, l.y);
+            t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
+            double a = 2 * Math.PI * Math.random();
+            vel = new PVector(Math.sin(a), Math.cos(a));
+            vel.mult(3*Math.random());
+        }
+
+        void update() {
+            loc.add(vel);
+            t.x = loc.x - player.t.x;
+            t.y = loc.y - player.t.y;
+        }
+
+        // returns false if drop is outside edges
+        boolean checkEdges() {
+            boolean ret = true;
+            if (loc.x > width) {
+                ret = false;
+            } else if (loc.x < 0) {
+                ret = false;
+            }
+
+            if (loc.y > height) {
+                ret = false;
+            } else if (loc.y < 0) {
+                ret = false;
+            }
+            return ret;
+        }
+
+        void display(GraphicsContext gc) {
+            gc.setFill(Color.YELLOW);
+            gc.fillOval(loc.x - 5 - player.t.x, loc.y - 5 - player.t.y, 10, 10);
+        }
+    }
+
+    /**
      * Backgrund sprites
      *
      */
@@ -413,7 +475,6 @@ public class Invaders extends Application {
 
         void display(GraphicsContext gc) {
             gc.setFill(this.col);
-            gc.setFill(Color.rgb(255, 255, 255));
             gc.fillOval(loc.x - 2.5 - player.t.x, loc.y - 2.5 - player.t.y, 5, 5);
         }
     }
