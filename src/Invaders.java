@@ -496,7 +496,7 @@ public class Invaders extends Application {
                 }
             }
             t.add(vel);
-//            loc.add(vel);
+//            loc.add(vel); // move the player sprite
         }
 
         void checkEdges() {
@@ -526,9 +526,10 @@ public class Invaders extends Application {
             gc.fillRect(xxx, yyy + 5 * s, 18 * s, 5 * s);
             gc.rotate(-angle);
             gc.translate(-player.loc.x, -player.loc.y);
-            
-            gc.setStroke(Color.BLUEVIOLET);
-            gc.strokeRect(t.x, t.y, 3, 3);
+  
+            // debug dot
+//            gc.setStroke(Color.BLUEVIOLET);
+//            gc.strokeRect(t.x, t.y, 3, 3);
         }
     }
 
