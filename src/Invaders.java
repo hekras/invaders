@@ -310,7 +310,6 @@ public class Invaders extends Application {
                         double hit = bombs.get(i).t.dist(player.loc);
                         if (hit < 23) {
                             bombs.remove(i--);
-                            // @todo die lene here
                             for(int ii = 0; ii < 500; ii++){
                                 boom.add(new PBoom(center));
                             }
