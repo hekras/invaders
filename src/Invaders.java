@@ -508,6 +508,10 @@ public class Invaders extends Application {
             }
         }
 
+        /**
+         * Renders the player
+         * @param gc graphicsContext of the game
+         */
         void display(GraphicsContext gc) {
             double angle = (Math.asin(d.y) < 0) ? Math.PI / 2 - Math.acos(d.x) : Math.PI / 2 + Math.acos(d.x);
             angle = 360 * angle / (2 * Math.PI);
@@ -558,7 +562,13 @@ public class Invaders extends Application {
 
         private double r1x1, r1y1, r1x2, r1y2; // for the hitbox
         private Color col;
-
+        
+        /**
+         * instansiates the baddie
+         * @param x coordinate
+         * @param y coordinate
+         * @param col color
+         */
         public PBadBoiAlien(double x, double y, Color col) {
             super(x, y);
             this.col = col;
@@ -566,22 +576,24 @@ public class Invaders extends Application {
 
         @Override
         public void display(double tick, GraphicsContext gc) {
+            double tx = loc.x - player.t.x; // translate location
+            double ty = loc.y - player.t.y;
             gc.setFill(col);
-            gc.fillRect(loc.x + 1 * S, loc.y, 8 * S, 1 * S);
-            gc.fillRect(loc.x, loc.y + 1 * S, 10 * S, 9 * S);
-            double xx = loc.x + 3 * Math.sin(tick * 2) * S;
-            gc.fillRect(xx, loc.y + 8 * S, 4 * S, 5 * S);
-            gc.fillRect(xx + 6 * S, loc.y + 8 * S, 4 * S, 5 * S);
+            gc.fillRect(tx + 1 * S, ty, 8 * S, 1 * S);
+            gc.fillRect(tx, ty + 1 * S, 10 * S, 9 * S);
+            double xx = tx + 3 * Math.sin(tick * 2) * S;
+            gc.fillRect(xx, ty + 8 * S, 4 * S, 5 * S);
+            gc.fillRect(xx + 6 * S, ty + 8 * S, 4 * S, 5 * S);
             gc.setFill(Color.WHITE); // hej
-            gc.fillRect(loc.x + 2 * S, loc.y + 2 * S, 2 * S, 4 * S);
-            gc.fillRect(loc.x + 6 * S, loc.y + 2 * S, 2 * S, 4 * S);
+            gc.fillRect(tx + 2 * S, ty + 2 * S, 2 * S, 4 * S);
+            gc.fillRect(tx + 6 * S, ty + 2 * S, 2 * S, 4 * S);
             gc.setFill(Color.BLACK);
-            gc.fillRect(loc.x + 2 * S, loc.y + 4 * S, 1 * S, 2 * S);
-            gc.fillRect(loc.x + 6 * S, loc.y + 4 * S, 1 * S, 2 * S);
+            gc.fillRect(tx + 2 * S, ty + 4 * S, 1 * S, 2 * S);
+            gc.fillRect(tx + 6 * S, ty + 4 * S, 1 * S, 2 * S);
 
             // calculate hitbox
-            r1x1 = loc.x;
-            r1y1 = loc.y;
+            r1x1 = tx;
+            r1y1 = ty;
             r1x2 = r1x1 + 10 * S;
             r1y2 = r1y1 + 13 * S;
         }
@@ -614,27 +626,29 @@ public class Invaders extends Application {
 
         @Override
         public void display(double tick, GraphicsContext gc) {
+            double tx = loc.x - player.t.x; // translate location
+            double ty = loc.y - player.t.y;
             gc.setFill(col);
-            gc.fillRect(loc.x + 1 * s, loc.y, 8 * s, 1 * s);
-            gc.fillRect(loc.x, loc.y + 1 * s, 10 * s, 9 * s);
-            double xx = loc.x + 3 * Math.sin(tick) * s;
-            gc.fillRect(xx, loc.y + 8 * s, 4 * s, 5 * s);
-            gc.fillRect(xx + 6 * s, loc.y + 8 * s, 4 * s, 5 * s);
+            gc.fillRect(tx + 1 * s, ty, 8 * s, 1 * s);
+            gc.fillRect(tx, ty + 1 * s, 10 * s, 9 * s);
+            double xx = tx + 3 * Math.sin(tick) * s;
+            gc.fillRect(xx, ty + 8 * s, 4 * s, 5 * s);
+            gc.fillRect(xx + 6 * s, ty + 8 * s, 4 * s, 5 * s);
             gc.setFill(Color.WHITE); // hej
-            gc.fillRect(loc.x + 2 * s, loc.y + 2 * s, 2 * s, 4 * s);
-            gc.fillRect(loc.x + 6 * s, loc.y + 2 * s, 2 * s, 4 * s);
+            gc.fillRect(tx + 2 * s, ty + 2 * s, 2 * s, 4 * s);
+            gc.fillRect(tx + 6 * s, ty + 2 * s, 2 * s, 4 * s);
             gc.setFill(Color.BLACK);
-            gc.fillRect(loc.x + 2 * s, loc.y + 4 * s, 1 * s, 2 * s);
-            gc.fillRect(loc.x + 6 * s, loc.y + 4 * s, 1 * s, 2 * s);
+            gc.fillRect(tx + 2 * s, ty + 4 * s, 1 * s, 2 * s);
+            gc.fillRect(tx + 6 * s, ty + 4 * s, 1 * s, 2 * s);
 
             // calculate hitbox
-            r1x1 = loc.x;
-            r1y1 = loc.y;
-            r1x2 = loc.x + 10 * s;
-            r1y2 = loc.y + 10 * s;
+            r1x1 = tx;
+            r1y1 = ty;
+            r1x2 = tx + 10 * s;
+            r1y2 = ty + 10 * s;
 
             r2x1 = xx;
-            r2y1 = loc.y + 8 * s;
+            r2y1 = ty + 8 * s;
             r2x2 = r2x1 + 4 * s;
             r2y2 = r2y1 + 5 * s;
 
@@ -688,13 +702,15 @@ public class Invaders extends Application {
 
         @Override
         public void display(double tick, GraphicsContext gc) {
-            double cx = loc.x - S / 2 + S * 6;
-            double cy = loc.y - S / 2 + S * 6;
+            double tx = loc.x - player.t.x; // translate location
+            double ty = loc.y - player.t.y;
+            double cx = tx - S / 2 + S * 6;
+            double cy = ty - S / 2 + S * 6;
             double r = 8;
 
             gc.setStroke(col1);
             gc.setLineWidth(S / 2);
-            gc.strokeOval(loc.x - S / 2, loc.y - S / 2, 12 * S, 12 * S);
+            gc.strokeOval(tx - S / 2, ty - S / 2, 12 * S, 12 * S);
             double x = cx + (r * S * Math.sin(tick));
             double y = cy + (r * S * Math.cos(tick));
             gc.beginPath();
@@ -710,8 +726,8 @@ public class Invaders extends Application {
             gc.stroke();
 
             // calculate hitbox
-            r1x1 = loc.x;
-            r1y1 = loc.y;
+            r1x1 = tx;
+            r1y1 = ty;
             r1x2 = r1x1 + 2 * r * S;
             r1y2 = r1y1 + 2 * r * S;
         }
@@ -750,13 +766,15 @@ public class Invaders extends Application {
 
         @Override
         public void display(double tick, GraphicsContext gc) {
-            double cx = loc.x - S / 2 + S * 6;
-            double cy = loc.y - S / 2 + S * 6;
+            double tx = loc.x - player.t.x; // translate location
+            double ty = loc.y - player.t.y;
+            double cx = tx - S / 2 + S * 6;
+            double cy = ty - S / 2 + S * 6;
             double r = 8;
 
             gc.setStroke(Color.WHITE);
             gc.setLineWidth(S / 2);
-            gc.strokeOval(loc.x - S / 2, loc.y - S / 2, 12 * S, 12 * S);
+            gc.strokeOval(tx - S / 2, ty - S / 2, 12 * S, 12 * S);
             double a = 2 * Math.PI / n;
             double x;
             double y;
@@ -773,8 +791,8 @@ public class Invaders extends Application {
             gc.stroke();
 
             // calculate hitbox
-            r1x1 = loc.x;
-            r1y1 = loc.y;
+            r1x1 = tx;
+            r1y1 = ty;
             r1x2 = r1x1 + 2 * r * S;
             r1y2 = r1y1 + 2 * r * S;
         }
