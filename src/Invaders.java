@@ -320,14 +320,11 @@ public class Invaders extends Application {
                 }
 
                 // animate boom if it is active
-                boom.forEach((p) -> {
-                    p.display(gc);
-                    p.update();
-                });
-
                 // remove boom sprites that are not visible
                 for (Iterator<PBoom> iter = boom.listIterator(); iter.hasNext();) {
                     PBoom p = iter.next();
+                    p.display(gc);
+                    p.update();
                     if (p.radius < 0.8) {
                         iter.remove();
                         if (boom.size() == 0) {
@@ -479,16 +476,18 @@ public class Invaders extends Application {
         PVector t; // translated location vector
         PVector loc;
         private Color col;
+        private double radius;
 
         public PBackgroundSprite(PVector l, Color col) {
             this.col = col;
             loc = new PVector(l.x + 30, l.y);
             t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
+            radius = 1 + 30 * Math.random();
         }
 
         void display(GraphicsContext gc) {
             gc.setFill(this.col);
-            gc.fillOval(loc.x - 2.5 - player.t.x, loc.y - 2.5 - player.t.y, 5, 5);
+            gc.fillOval(loc.x - 2.5 - player.t.x, loc.y - 2.5 - player.t.y, radius, radius);
         }
     }
 
