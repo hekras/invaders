@@ -468,7 +468,7 @@ public class Invaders extends Application {
     }
 
     /**
-     * Backgrund sprites
+     * Backgrund sprites test
      *
      */
     class PBackgroundSprite {
