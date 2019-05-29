@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 
 /**
  *
@@ -51,11 +51,12 @@ public class Invaders extends Application {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
 
-    final double height = 1080;
-    final double width = 1920;
+    final double HEIGHT = 1080;
+    final double WIDTH = 1920;
+    SectorClass[][] sector = new SectorClass[100][100];
     AnimationTimer timer;
-    final Canvas canvas = new Canvas(width, height);
-    PGoodBoi player = new PGoodBoi(width / 2, height - 80);
+    final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
+    PGoodBoi player = new PGoodBoi(WIDTH / 2, HEIGHT - 80);
     PVector center;
     List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
@@ -69,11 +70,10 @@ public class Invaders extends Application {
     boolean krigth = false;
 
     @Override
-
     public void start(Stage stage) {
         Group root = new Group();
-        Scene s = new Scene(root, width, height, Color.BLACK);
-        center = new PVector(width / 2, height / 2);
+        Scene s = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
+        center = new PVector(WIDTH / 2, HEIGHT / 2);
         player.loc = new PVector(center.x, center.y);
 
         s.setOnMouseMoved((MouseEvent e) -> {
@@ -120,7 +120,7 @@ public class Invaders extends Application {
             }
         });
 
-        root.getChildren().add(canvas);
+        root.getChildren().add(CANVAS);
         s.setCursor(Cursor.NONE);
         stage.setScene(s);
         stage.show();
@@ -179,7 +179,7 @@ public class Invaders extends Application {
      */
     public void initBackground() {
         for (int i = 0; i < 2000; i++) {
-            pbs.add(new PBackgroundSprite(new PVector(Math.random() * 19200, Math.random() * 10800), Color.DARKSLATEGRAY));
+            pbs.add(new PBackgroundSprite(new PVector(Math.random() * WIDTH * 10, Math.random() * HEIGHT * 10), Color.DARKSLATEGRAY));
         }
     }
 
@@ -195,9 +195,9 @@ public class Invaders extends Application {
             public void handle(long l) {
                 double xxx = 0;
                 double yyy = 0;
-                GraphicsContext gc = canvas.getGraphicsContext2D();
+                GraphicsContext gc = CANVAS.getGraphicsContext2D();
                 PVector mloc = new PVector(mousex, mousey);
-                gc.clearRect(0, 0, width, height);
+                gc.clearRect(0, 0, WIDTH, HEIGHT);
 
                 // update the good guy
                 player.d = PVector.sub(mloc, player.loc);
@@ -383,13 +383,13 @@ public class Invaders extends Application {
         // returns false if drop is outside edges
         boolean checkEdges() {
             boolean ret = true;
-            if (loc.x > width) {
+            if (loc.x > WIDTH) {
                 ret = false;
             } else if (loc.x < 0) {
                 ret = false;
             }
 
-            if (loc.y > height) {
+            if (loc.y > HEIGHT) {
                 ret = false;
             } else if (loc.y < 0) {
                 ret = false;
@@ -447,13 +447,13 @@ public class Invaders extends Application {
         // returns false if drop is outside edges
         boolean checkEdges() {
             boolean ret = true;
-            if (loc.x > width) {
+            if (loc.x > WIDTH) {
                 ret = false;
             } else if (loc.x < 0) {
                 ret = false;
             }
 
-            if (loc.y > height) {
+            if (loc.y > HEIGHT) {
                 ret = false;
             } else if (loc.y < 0) {
                 ret = false;
@@ -468,7 +468,7 @@ public class Invaders extends Application {
     }
 
     /**
-     * Backgrund sprites test
+     * Background sprites
      *
      */
     class PBackgroundSprite {
@@ -518,13 +518,13 @@ public class Invaders extends Application {
         // returns false if drop is outside edges
         boolean checkEdges() {
             boolean ret = true;
-            if (loc.x > width) {
+            if (loc.x > WIDTH) {
                 ret = false;
             } else if (loc.x < 0) {
                 ret = false;
             }
 
-            if (loc.y > height) {
+            if (loc.y > HEIGHT) {
                 ret = false;
             } else if (loc.y < 0) {
                 ret = false;
@@ -925,6 +925,10 @@ public class Invaders extends Application {
             }
             return false;
         }
+    }
+    
+    class SectorClass {
+        List<PBackgroundSprite> bgs = new ArrayList<>();
     }
 
 }
