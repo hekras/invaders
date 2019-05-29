@@ -53,6 +53,8 @@ public class Invaders extends Application {
     final double HEIGHT = 1080;
     final double WIDTH = 1920;
     final int SECTOR_SIZE = 100;
+    final int SECTOR_DX = 1000;
+    final int SECTOR_DY = 1000;
     SectorClass[][] sector = new SectorClass[SECTOR_SIZE][SECTOR_SIZE];
     AnimationTimer timer;
     final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
@@ -178,25 +180,23 @@ public class Invaders extends Application {
      * distributes stars on the background
      */
     public void initBackground() {
-        int xmax = 1000;
-        int ymax = 1000;
         for (int i = 0; i < SECTOR_SIZE; i++) {
             for (int j = 0; j < SECTOR_SIZE; j++) {
                 sector[i][j] = new SectorClass();
-                sector[i][j].xMin = (xmax * i) / SECTOR_SIZE;
-                sector[i][j].xMax = (xmax * (i+1) / SECTOR_SIZE) - 1;
-                sector[i][j].yMin = (ymax * j) / SECTOR_SIZE;
-                sector[i][j].yMax = (ymax * (j+1) / SECTOR_SIZE) - 1;
+                sector[i][j].xMin = (SECTOR_DX * i) / SECTOR_SIZE;
+                sector[i][j].xMax = (SECTOR_DX * (i + 1) / SECTOR_SIZE) - 1;
+                sector[i][j].yMin = (SECTOR_DY * j) / SECTOR_SIZE;
+                sector[i][j].yMax = (SECTOR_DY * (j + 1) / SECTOR_SIZE) - 1;
             }
         }
         for (int ii = 0; ii < 100000; ii++) {
-            int x = (int) (Math.random() * xmax * SECTOR_SIZE);
-            int y = (int) (Math.random() * ymax * SECTOR_SIZE);
-            PVector v = new PVector(x,y);
+            int x = (int) (Math.random() * SECTOR_DX * SECTOR_SIZE);
+            int y = (int) (Math.random() * SECTOR_DY * SECTOR_SIZE);
+            PVector v = new PVector(x, y);
             PBackgroundSprite pb = new PBackgroundSprite(v, Color.DARKSLATEGRAY);
             backgroundSpriteList.add(pb);
-            int i = x / xmax;
-            int j = y / ymax;
+            int i = x / SECTOR_DX;
+            int j = y / SECTOR_DY;
             sector[i][j].backgroundSpriteList.add(pb);
         }
     }
@@ -298,11 +298,9 @@ public class Invaders extends Application {
                         }
                     }
                 }
-
-                // render the background sprites
-                backgroundSpriteList.forEach((p) -> {
-                    p.display(gc);
-                });
+                
+                // render stuff in the sectors
+                renderSectors(gc);
 
                 // render the bad guys
                 tick += Math.PI / 60;
@@ -319,7 +317,7 @@ public class Invaders extends Application {
                     }
                 }
 
-                // collision detect goodboi against bombs
+                // collision detect player against bombs
                 for (int i = 0; i < bombs.size(); i++) {
                     bombs.get(i).update();
                     if (!bombs.get(i).checkEdges()) {
@@ -364,6 +362,28 @@ public class Invaders extends Application {
             }
         };
         timer.start();
+    }
+
+    public void renderSectors(GraphicsContext gc) {
+        // render the background sprites
+        // first calculate the sectors cuurently on the screen
+        int imin = (int) (player.t.x / SECTOR_DX);
+        int imax = (int) ((player.t.x + WIDTH) / SECTOR_DX) + 1;
+        int jmin = (int) (player.t.y / SECTOR_DX);
+        int jmax = (int) ((player.t.y + HEIGHT) / SECTOR_DY) + 1;
+        int count = 0;
+
+        for (int i = imin; i < imax; i++) {
+            for (int j = jmin; j < jmax; j++) {
+                sector[i][j].backgroundSpriteList.forEach((p) -> {
+                    p.display(gc);
+                });
+                count += sector[i][j].backgroundSpriteList.size();
+            }
+        }
+        gc.setFill(Color.WHITE);
+        gc.fillText("count:" + count, 10, 20);
+
     }
 
     public static void main(String[] args) {
@@ -574,7 +594,7 @@ public class Invaders extends Application {
      */
     class PGoodBoi {
 
-        PVector t; // translation vector
+        PVector t; // translation vector (uppper left cornor)
         PVector loc; // location in space
         PVector vel; // vector for velocity
         PVector acc; // vector for accelleration
@@ -946,6 +966,7 @@ public class Invaders extends Application {
     }
 
     class SectorClass {
+
         public double xMin;
         public double xMax;
         public double yMin;
