@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-
 /**
  *
  * @author oldhandmixer
@@ -53,7 +52,8 @@ public class Invaders extends Application {
 
     final double HEIGHT = 1080;
     final double WIDTH = 1920;
-    SectorClass[][] sector = new SectorClass[100][100];
+    final int SECTOR_SIZE = 100;
+    SectorClass[][] sector = new SectorClass[SECTOR_SIZE][SECTOR_SIZE];
     AnimationTimer timer;
     final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
     PGoodBoi player = new PGoodBoi(WIDTH / 2, HEIGHT - 80);
@@ -61,7 +61,7 @@ public class Invaders extends Application {
     List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
-    List<PBackgroundSprite> pbs = new ArrayList<>();
+    List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     List<PBoom> boom = new ArrayList<>();
     double mousex, mousey;
     boolean kdown = false;
@@ -178,8 +178,26 @@ public class Invaders extends Application {
      * distributes stars on the background
      */
     public void initBackground() {
-        for (int i = 0; i < 2000; i++) {
-            pbs.add(new PBackgroundSprite(new PVector(Math.random() * WIDTH * 10, Math.random() * HEIGHT * 10), Color.DARKSLATEGRAY));
+        int xmax = 1000;
+        int ymax = 1000;
+        for (int i = 0; i < SECTOR_SIZE; i++) {
+            for (int j = 0; j < SECTOR_SIZE; j++) {
+                sector[i][j] = new SectorClass();
+                sector[i][j].xMin = (xmax * i) / SECTOR_SIZE;
+                sector[i][j].xMax = (xmax * (i+1) / SECTOR_SIZE) - 1;
+                sector[i][j].yMin = (ymax * j) / SECTOR_SIZE;
+                sector[i][j].yMax = (ymax * (j+1) / SECTOR_SIZE) - 1;
+            }
+        }
+        for (int ii = 0; ii < 100000; ii++) {
+            int x = (int) (Math.random() * xmax * SECTOR_SIZE);
+            int y = (int) (Math.random() * ymax * SECTOR_SIZE);
+            PVector v = new PVector(x,y);
+            PBackgroundSprite pb = new PBackgroundSprite(v, Color.DARKSLATEGRAY);
+            backgroundSpriteList.add(pb);
+            int i = x / xmax;
+            int j = y / ymax;
+            sector[i][j].backgroundSpriteList.add(pb);
         }
     }
 
@@ -282,7 +300,7 @@ public class Invaders extends Application {
                 }
 
                 // render the background sprites
-                pbs.forEach((p) -> {
+                backgroundSpriteList.forEach((p) -> {
                     p.display(gc);
                 });
 
@@ -926,9 +944,13 @@ public class Invaders extends Application {
             return false;
         }
     }
-    
+
     class SectorClass {
-        List<PBackgroundSprite> bgs = new ArrayList<>();
+        public double xMin;
+        public double xMax;
+        public double yMin;
+        public double yMax;
+        List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     }
 
 }
