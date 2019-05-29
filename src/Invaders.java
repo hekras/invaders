@@ -52,10 +52,10 @@ public class Invaders extends Application {
 
     final double HEIGHT = 1080;
     final double WIDTH = 1920;
-    final int SECTOR_SIZE = 100;
+    final int SECTOR_XYSIZE = 500;
     final int SECTOR_DX = 1000;
     final int SECTOR_DY = 1000;
-    SectorClass[][] sector = new SectorClass[SECTOR_SIZE][SECTOR_SIZE];
+    SectorClass[][] sector = new SectorClass[SECTOR_XYSIZE][SECTOR_XYSIZE];
     AnimationTimer timer;
     final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
     PGoodBoi player = new PGoodBoi(WIDTH / 2, HEIGHT - 80);
@@ -63,7 +63,7 @@ public class Invaders extends Application {
     List<BadBoiClass> baddies = new ArrayList<>();
     List<PDrops> missiles = new ArrayList<>();
     List<PBomb> bombs = new ArrayList<>();
-    List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
+//    List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     List<PBoom> boom = new ArrayList<>();
     double mousex, mousey;
     boolean kdown = false;
@@ -180,21 +180,21 @@ public class Invaders extends Application {
      * distributes stars on the background
      */
     public void initBackground() {
-        for (int i = 0; i < SECTOR_SIZE; i++) {
-            for (int j = 0; j < SECTOR_SIZE; j++) {
+        for (int i = 0; i < SECTOR_XYSIZE; i++) {
+            for (int j = 0; j < SECTOR_XYSIZE; j++) {
                 sector[i][j] = new SectorClass();
-                sector[i][j].xMin = (SECTOR_DX * i) / SECTOR_SIZE;
-                sector[i][j].xMax = (SECTOR_DX * (i + 1) / SECTOR_SIZE) - 1;
-                sector[i][j].yMin = (SECTOR_DY * j) / SECTOR_SIZE;
-                sector[i][j].yMax = (SECTOR_DY * (j + 1) / SECTOR_SIZE) - 1;
+                sector[i][j].xMin = (SECTOR_DX * i) / SECTOR_XYSIZE;
+                sector[i][j].xMax = (SECTOR_DX * (i + 1) / SECTOR_XYSIZE) - 1;
+                sector[i][j].yMin = (SECTOR_DY * j) / SECTOR_XYSIZE;
+                sector[i][j].yMax = (SECTOR_DY * (j + 1) / SECTOR_XYSIZE) - 1;
             }
         }
-        for (int ii = 0; ii < 100000; ii++) {
-            int x = (int) (Math.random() * SECTOR_DX * SECTOR_SIZE);
-            int y = (int) (Math.random() * SECTOR_DY * SECTOR_SIZE);
+        for (int ii = 0; ii < 1000000; ii++) {
+            int x = (int) (Math.random() * SECTOR_DX * SECTOR_XYSIZE);
+            int y = (int) (Math.random() * SECTOR_DY * SECTOR_XYSIZE);
             PVector v = new PVector(x, y);
             PBackgroundSprite pb = new PBackgroundSprite(v, Color.DARKSLATEGRAY);
-            backgroundSpriteList.add(pb);
+//            backgroundSpriteList.add(pb);
             int i = x / SECTOR_DX;
             int j = y / SECTOR_DY;
             sector[i][j].backgroundSpriteList.add(pb);
@@ -364,7 +364,7 @@ public class Invaders extends Application {
         timer.start();
     }
 
-    public void renderSectors(GraphicsContext gc) {
+    final public void renderSectors(GraphicsContext gc) {
         // render the background sprites
         // first calculate the sectors cuurently on the screen
         int imin = (int) (player.t.x / SECTOR_DX);
