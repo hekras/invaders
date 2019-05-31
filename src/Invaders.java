@@ -66,10 +66,10 @@ public class Invaders extends Application {
 //    List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     List<PBoom> boom = new ArrayList<>();
     double mousex, mousey;
-    boolean kdown = false;
-    boolean kup = false;
-    boolean kleft = false;
-    boolean krigth = false;
+    boolean keydown = false;
+    boolean keyup = false;
+    boolean keyleft = false;
+    boolean keyrigth = false;
 
     @Override
     public void start(Stage stage) {
@@ -91,16 +91,16 @@ public class Invaders extends Application {
         s.setOnKeyPressed((KeyEvent e) -> {
             switch (e.getCode()) {
                 case A:
-                    kleft = true;
+                    keyleft = true;
                     break;
                 case D:
-                    krigth = true;
+                    keyrigth = true;
                     break;
                 case W:
-                    kup = true;
+                    keyup = true;
                     break;
                 case S:
-                    kdown = true;
+                    keydown = true;
                     break;
             }
         });
@@ -108,16 +108,16 @@ public class Invaders extends Application {
         s.setOnKeyReleased((KeyEvent e) -> {
             switch (e.getCode()) {
                 case A:
-                    kleft = false;
+                    keyleft = false;
                     break;
                 case D:
-                    krigth = false;
+                    keyrigth = false;
                     break;
                 case W:
-                    kup = false;
+                    keyup = false;
                     break;
                 case S:
-                    kdown = false;
+                    keydown = false;
                     break;
             }
         });
@@ -277,7 +277,10 @@ public class Invaders extends Application {
                         break;
                 }
 
-                // collission detect missiles
+                // render stuff in the sectors
+                renderSectors(gc);
+
+                 // collission detect missiles
                 for (int i = 0; i < missiles.size(); i++) {
                     missiles.get(i).update();
                     if (!missiles.get(i).checkEdges()) {
@@ -299,9 +302,6 @@ public class Invaders extends Application {
                     }
                 }
                 
-                // render stuff in the sectors
-                renderSectors(gc);
-
                 // render the bad guys
                 tick += Math.PI / 60;
                 tick = (tick > Math.PI * 2) ? tick - 2 * Math.PI : tick;
@@ -613,7 +613,7 @@ public class Invaders extends Application {
          * handles keypress. Called by AnimationTimer handler at every frame
          */
         void update() {
-            if (kup) {
+            if (keyup) {
                 acc.x = d.x;
                 acc.y = d.y;
                 acc.mult(0.05);
@@ -622,7 +622,7 @@ public class Invaders extends Application {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            } else if (kdown) {
+            } else if (keydown) {
                 acc.x = -d.x;
                 acc.y = -d.y;
                 acc.mult(0.05);
@@ -631,7 +631,7 @@ public class Invaders extends Application {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            } else if (kleft) {
+            } else if (keyleft) {
                 acc.x = d.y;
                 acc.y = -d.x;
                 acc.mult(0.05);
@@ -640,7 +640,7 @@ public class Invaders extends Application {
                     vel.normalize();
                     vel.mult(topspeed);
                 }
-            } else if (krigth) {
+            } else if (keyrigth) {
                 acc.x = -d.y;
                 acc.y = d.x;
                 acc.mult(0.05);
