@@ -280,7 +280,7 @@ public class Invaders extends Application {
                 // render stuff in the sectors
                 renderSectors(gc);
 
-                 // collission detect missiles
+                // collission detect missiles
                 for (int i = 0; i < missiles.size(); i++) {
                     missiles.get(i).update();
                     if (!missiles.get(i).checkEdges()) {
@@ -301,7 +301,7 @@ public class Invaders extends Application {
                         }
                     }
                 }
-                
+
                 // render the bad guys
                 tick += Math.PI / 60;
                 tick = (tick > Math.PI * 2) ? tick - 2 * Math.PI : tick;
@@ -344,7 +344,7 @@ public class Invaders extends Application {
                     if (p.radius < 0.8) {
                         iter.remove();
                         if (boom.size() == 0) {
-                            System.exit(0);
+                            //System.exit(0);
                         }
                     }
                 }
@@ -400,8 +400,10 @@ public class Invaders extends Application {
         PVector d;
         PVector loc;
         PVector vel;
+        PVector acc;
         private static final int s = 30;
         private static final int w = 5;
+        private double life = 100;
 
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
@@ -409,34 +411,24 @@ public class Invaders extends Application {
             vel = new PVector(0, 1);
             vel.normalize();
             vel.mult(2 + 3 * Math.random());
+            life = 500;
         }
 
         void update(PGoodBoi p) {
-            PVector dir = PVector.sub(p.loc, t);
-            dir.normalize();
-            dir.mult(Math.random() * 0.2);
-            vel.add(dir);
+            acc = PVector.sub(p.loc, t);
+            acc.normalize();
+            acc.mult(0.2);
+            vel.add(acc);
 //            vel.limit(p.topspeed);
 
             loc.add(vel);
             t = PVector.sub(loc, player.t);
+            life--;
         }
 
         // returns false if drop is outside edges
         boolean checkEdges() {
-            boolean ret = true;
-            if (loc.x > WIDTH) {
-                ret = false;
-            } else if (loc.x < 0) {
-                ret = false;
-            }
-
-            if (loc.y > HEIGHT) {
-                ret = false;
-            } else if (loc.y < 0) {
-                ret = false;
-            }
-            return ret;
+            return (life > 0) ? true : false;
         }
 
         // returns true if there is a collision
@@ -454,6 +446,12 @@ public class Invaders extends Application {
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(t.x - 5, t.y - 5, 10, 10);
+/*            PVector v = PVector.sub(player.loc, t);
+            gc.setLineWidth(1.0);
+            gc.setStroke(Color.YELLOW);
+            gc.strokeLine(t.x - 5, t.y - 5, player.loc.x, player.loc.y);
+            gc.setStroke(Color.RED);
+            gc.strokeLine(t.x, t.y, t.x + acc.x * 150, t.y + acc.y * 150);*/
         }
     }
 
@@ -978,7 +976,7 @@ public class Invaders extends Application {
         public double yMax;
         List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     }
-    
+
 }
 
 /**
