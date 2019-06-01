@@ -397,23 +397,18 @@ public class Invaders extends Application {
     class PBomb {
 
         PVector t; // translated location vector
-        PVector d;
         PVector loc;
         PVector vel;
         PVector acc;
         private static final int s = 30;
         private static final int w = 5;
-        private double life = 100;
-        private double vellimit = 5;
+        private double life = 500;
+        private double vellimit = 3 + 10 * Math.random();
 
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
             t = PVector.sub(loc, player.t);
-            vel = new PVector(0, 1);
-            vel.normalize();
-            vel.mult(2 + 3 * Math.random());
-            life = 500;
-            vellimit = 2 + 6 * Math.random();
+            vel = new PVector(0, 0);
         }
 
         void update(PGoodBoi p) {
@@ -448,12 +443,6 @@ public class Invaders extends Application {
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(t.x - 5, t.y - 5, 10, 10);
-            PVector v = PVector.sub(player.loc, t);
-            gc.setLineWidth(3.0);
-            gc.setStroke(Color.YELLOW);
-            gc.strokeLine(t.x - 5, t.y - 5, player.loc.x, player.loc.y);
-            gc.setStroke(Color.RED);
-            gc.strokeLine(t.x, t.y, t.x + acc.x * 150, t.y + acc.y * 150);
         }
     }
 
