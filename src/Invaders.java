@@ -404,6 +404,7 @@ public class Invaders extends Application {
         private static final int s = 30;
         private static final int w = 5;
         private double life = 100;
+        private double vellimit = 5;
 
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
@@ -412,14 +413,15 @@ public class Invaders extends Application {
             vel.normalize();
             vel.mult(2 + 3 * Math.random());
             life = 500;
+            vellimit = 2 + 6 * Math.random();
         }
 
         void update(PGoodBoi p) {
             acc = PVector.sub(p.loc, t);
             acc.normalize();
-            acc.mult(0.2);
+            acc.mult(0.1);
             vel.add(acc);
-//            vel.limit(p.topspeed);
+            vel.limit(vellimit);
 
             loc.add(vel);
             t = PVector.sub(loc, player.t);
@@ -446,12 +448,12 @@ public class Invaders extends Application {
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(t.x - 5, t.y - 5, 10, 10);
-/*            PVector v = PVector.sub(player.loc, t);
-            gc.setLineWidth(1.0);
+            PVector v = PVector.sub(player.loc, t);
+            gc.setLineWidth(3.0);
             gc.setStroke(Color.YELLOW);
             gc.strokeLine(t.x - 5, t.y - 5, player.loc.x, player.loc.y);
             gc.setStroke(Color.RED);
-            gc.strokeLine(t.x, t.y, t.x + acc.x * 150, t.y + acc.y * 150);*/
+            gc.strokeLine(t.x, t.y, t.x + acc.x * 150, t.y + acc.y * 150);
         }
     }
 
