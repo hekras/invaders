@@ -20,17 +20,17 @@ import javafx.stage.Stage;
  */
 public class Invaders extends Application {
 
-    final static int STARTLEVEL = 2;
+    final static int STARTLEVEL = 0;
     int levels[][] = {
         // Level 0
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         // Level 1
         {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 0},
         {1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1},
@@ -406,8 +406,7 @@ public class Invaders extends Application {
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
             t = PVector.sub(loc, player.t);
-            d = new PVector(0, 1);
-            vel = new PVector(d.x, d.y);
+            vel = new PVector(0, 1);
             vel.normalize();
             vel.mult(2 + 3 * Math.random());
         }
@@ -415,13 +414,12 @@ public class Invaders extends Application {
         void update(PGoodBoi p) {
             PVector dir = PVector.sub(p.loc, t);
             dir.normalize();
-            dir.mult(Math.random() * 0.21);
+            dir.mult(Math.random() * 0.2);
             vel.add(dir);
 //            vel.limit(p.topspeed);
 
             loc.add(vel);
-            t.x = loc.x - player.t.x;
-            t.y = loc.y - player.t.y;
+            t = PVector.sub(loc, player.t);
         }
 
         // returns false if drop is outside edges
@@ -455,7 +453,7 @@ public class Invaders extends Application {
 
         void display(GraphicsContext gc) {
             gc.setFill(Color.YELLOW);
-            gc.fillOval(loc.x - 5 - player.t.x, loc.y - 5 - player.t.y, 10, 10);
+            gc.fillOval(t.x - 5, t.y - 5, 10, 10);
         }
     }
 
@@ -606,6 +604,7 @@ public class Invaders extends Application {
         PVector acc; // vector for accelleration
         PVector d; // nomalized vector for direction
         double topspeed = 10;
+        double accFactor = 0.1;
         private static final int s = 3; // scale of good gal
 
         public PGoodBoi(double x, double y) {
@@ -622,7 +621,7 @@ public class Invaders extends Application {
             if (keyup) {
                 acc.x = d.x;
                 acc.y = d.y;
-                acc.mult(0.05);
+                acc.mult(accFactor);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
                     vel.normalize();
@@ -631,7 +630,7 @@ public class Invaders extends Application {
             } else if (keydown) {
                 acc.x = -d.x;
                 acc.y = -d.y;
-                acc.mult(0.05);
+                acc.mult(accFactor);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
                     vel.normalize();
@@ -640,7 +639,7 @@ public class Invaders extends Application {
             } else if (keyleft) {
                 acc.x = d.y;
                 acc.y = -d.x;
-                acc.mult(0.05);
+                acc.mult(accFactor);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
                     vel.normalize();
@@ -649,7 +648,7 @@ public class Invaders extends Application {
             } else if (keyrigth) {
                 acc.x = -d.y;
                 acc.y = d.x;
-                acc.mult(0.05);
+                acc.mult(accFactor);
                 vel.add(acc);
                 if (vel.mag() > topspeed) {
                     vel.normalize();
@@ -979,7 +978,7 @@ public class Invaders extends Application {
         public double yMax;
         List<PBackgroundSprite> backgroundSpriteList = new ArrayList<>();
     }
-
+    
 }
 
 /**
