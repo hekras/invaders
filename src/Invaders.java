@@ -319,7 +319,7 @@ public class Invaders extends Application {
 
                 // collision detect player against bombs
                 for (int i = 0; i < bombs.size(); i++) {
-                    bombs.get(i).update();
+                    bombs.get(i).update(player);
                     if (!bombs.get(i).checkEdges()) {
                         bombs.remove(i--);
                     } else {
@@ -405,14 +405,20 @@ public class Invaders extends Application {
 
         public PBomb(PVector l) {
             loc = new PVector(l.x + 30, l.y);
-            t = new PVector(loc.x - player.t.x, loc.y - player.t.y);
+            t = PVector.sub(loc, player.t);
             d = new PVector(0, 1);
             vel = new PVector(d.x, d.y);
             vel.normalize();
             vel.mult(2 + 3 * Math.random());
         }
 
-        void update() {
+        void update(PGoodBoi p) {
+            PVector dir = PVector.sub(p.loc, t);
+            dir.normalize();
+            dir.mult(Math.random() * 0.21);
+            vel.add(dir);
+//            vel.limit(p.topspeed);
+
             loc.add(vel);
             t.x = loc.x - player.t.x;
             t.y = loc.y - player.t.y;
