@@ -211,8 +211,6 @@ public class Invaders extends Application {
 
             @Override
             public void handle(long l) {
-                double xxx = 0;
-                double yyy = 0;
                 GraphicsContext gc = CANVAS.getGraphicsContext2D();
                 PVector mloc = new PVector(mousex, mousey);
                 gc.clearRect(0, 0, WIDTH, HEIGHT);
@@ -223,9 +221,9 @@ public class Invaders extends Application {
                 player.update();
                 player.checkEdges();
 
-                // move the baddies
-                switch (state) {
-                    case 0: // move baddies to the rigth
+                // move the baddies - old style!!!
+/*                switch (state) {
+                    case 0: // move baddies to the right
                         boolean hitTheEdge = false;
                         PVector vel = new PVector(1, 0);
                         vel.mult(baddiespeed);
@@ -276,6 +274,7 @@ public class Invaders extends Application {
                         }
                         break;
                 }
+*/
 
                 // render stuff in the sectors
                 renderSectors(gc);
@@ -306,6 +305,7 @@ public class Invaders extends Application {
                 tick += Math.PI / 60;
                 tick = (tick > Math.PI * 2) ? tick - 2 * Math.PI : tick;
                 baddies.forEach((p) -> {
+                    p.update();
                     p.display(tick, gc);
                 });
 
@@ -364,9 +364,12 @@ public class Invaders extends Application {
         timer.start();
     }
 
+    /**
+     * render the background sprites
+     * first calculate the sectors currently on the screen
+     * @param gc the GraphicsContext
+     */
     final public void renderSectors(GraphicsContext gc) {
-        // render the background sprites
-        // first calculate the sectors cuurently on the screen
         int imin = (int) (player.t.x / SECTOR_DX);
         int imax = (int) ((player.t.x + WIDTH) / SECTOR_DX) + 1;
         int jmin = (int) (player.t.y / SECTOR_DX);
@@ -411,7 +414,10 @@ public class Invaders extends Application {
             vel = new PVector(0, 0);
         }
 
-        void update(PGoodBoi p) {
+        /**
+         * called once every frame and handles movement of the object
+         */
+        void update(PGoodBoi p) { 
             acc = PVector.sub(p.loc, t);
             acc.normalize();
             acc.mult(0.1);
@@ -422,13 +428,20 @@ public class Invaders extends Application {
             t = PVector.sub(loc, player.t);
             life--;
         }
-
-        // returns false if drop is outside edges
+        
+        /**
+         * 
+         * @return  false if drop is outside edges
+         */
         boolean checkEdges() {
             return (life > 0) ? true : false;
         }
 
-        // returns true if there is a collision
+        /**
+         * 
+         * @param p the object to detect collission with
+         * @return returns true if there is a collision
+         */
         boolean checkCollision(PGoodBoi p) {
             boolean ret = false;
 
@@ -701,6 +714,10 @@ public class Invaders extends Application {
 
         public boolean contains(double x, double y) {
             return false;
+        }
+
+        public void update(){
+            
         }
 
     }
